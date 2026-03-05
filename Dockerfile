@@ -1,5 +1,5 @@
 # Fetch from rocky docker repo
-FROM --platform=linux/arm64 rockylinux/rockylinux:10
+FROM rockylinux/rockylinux:10
 
 # Copy rpm macros 
 COPY rpmmacros /root/.rpmmacros
