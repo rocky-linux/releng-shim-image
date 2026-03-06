@@ -16,6 +16,7 @@ jobs:
             arch: 'amd64, arm64'
         registry:
           - domain: quay.io
+            account: rockylinux
 
     runs-on: ubuntu-latest
     name: Build and push rockylinux shim images
