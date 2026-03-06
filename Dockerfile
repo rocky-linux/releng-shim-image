@@ -1,5 +1,14 @@
-# Fetch from rocky docker repo
-FROM rockylinux/rockylinux:10
+ARG ImageVersion
+
+FROM rockylinux/rockylinux:$ImageVersion
+
+LABEL com.github.containers.toolbox="true" \
+      usage="This image is meant to be used for shim validation" \
+      org.opencontainers.image.authors="Releng team <releng@rockylinux.org>" \
+      org.opencontainers.image.description="Base image for creating Rocky Linux shim reviews" \
+      org.opencontainers.image.licenses="BSD-3-Clause" \
+      org.opencontainers.image.url="https://github.com/rocky-linux/releng-shim-image" \
+      org.opencontainers.image.vendor="Rocky Enterprise Software Foundation"
 
 # Copy rpm macros 
 COPY rpmmacros /root/.rpmmacros
