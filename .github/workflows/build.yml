@@ -51,7 +51,7 @@ jobs:
             org.opencontainers.image.title=rockylinux-shim
             org.opencontainers.image.version=${{ matrix.version.major }}
           oci: true
-          tags: ${{ matrix.registry.domain }}/${{ matrix.registry.account }}/rocky-shim-images:${{ matrix.version.major }}
+          tags: ${{ matrix.registry.domain }}/${{ matrix.registry.account }}/rocky-shim:${{ matrix.version.major }}
 
       - name: Push image
         uses: redhat-actions/push-to-registry@v2
