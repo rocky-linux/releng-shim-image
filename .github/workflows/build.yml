@@ -1,0 +1,59 @@
+name: Build rocky shim images
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        version:
+          - major: 9
+            arch: 'amd64, arm64'
+          - major: 10
+            arch: 'amd64, arm64'
+        registry:
+          - domain: quay.io
+
+    runs-on: ubuntu-latest
+    name: Build and push rockylinux shim images
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install qemu dependency
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y qemu-user-static
+
+      - name: Setup Registry login
+        uses: redhat-actions/podman-login@v1
+        with:
+          username: ${{ secrets.QUAYIO_USERNAME }}
+          password: ${{ secrets.QUAYIO_PASSWORD }}
+          registry: ${{ matrix.registry.domain }}
+
+      - name: Build image
+        uses: redhat-actions/buildah-build@v2
+        id: build-image
+        with:
+          archs: ${{ matrix.version.arch }}
+          build-args: |
+            ImageVersion=${{ matrix.version.major }}
+          containerfiles: |
+            ./Dockerfile
+          extra-args: |
+            --squash
+          labels: |
+            name=rockylinux-shim
+            org.opencontainers.image.title=rockylinux-shim
+            org.opencontainers.image.version=${{ matrix.version.major }}
+          oci: true
+          tags: ${{ matrix.registry.domain }}/${{ matrix.registry.account }}/rocky-shim-images:${{ matrix.version.major }}
+
+      - name: Push image
+        uses: redhat-actions/push-to-registry@v2
+        with:
+          image: ${{ steps.build-image.outputs.image }}
+          tags: ${{ steps.build-image.outputs.tags }}
